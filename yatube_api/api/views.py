@@ -29,8 +29,12 @@ class PostViewSet(viewsets.ModelViewSet):
             serializer = CommentSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save(author=request.user, post=post)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    serializer.data, status=status.HTTP_201_CREATED
+                    )
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                )
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
@@ -49,14 +53,16 @@ class CommentViewSet(viewsets.ModelViewSet):
         queryset = Comment.objects.all()
         post_id = self.kwargs.get('post_id')
         if post_id:
-            # Если поста с таким id нет, get_object_or_404 выбросит 404 Not Found
+            # Если поста с таким id нет,
+            # get_object_or_404 выбросит 404 Not Found
             get_object_or_404(Post, pk=post_id)
             # Если пост есть, ищем комментарий только среди его комментариев
             queryset = queryset.filter(post_id=post_id)
         return queryset
 
     def perform_create(self, serializer):
-        # Получаем post_id из URL, если комментарий создается через этот ViewSet
+        # Получаем post_id из URL,
+        # если комментарий создается через этот ViewSet
         post_id = self.kwargs.get('post_id')
         post = get_object_or_404(Post, pk=post_id)
         serializer.save(author=self.request.user, post=post)
