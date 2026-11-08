@@ -31,10 +31,10 @@ class PostViewSet(viewsets.ModelViewSet):
                 serializer.save(author=request.user, post=post)
                 return Response(
                     serializer.data, status=status.HTTP_201_CREATED
-                    )
+                )
             return Response(
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                )
+            )
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
